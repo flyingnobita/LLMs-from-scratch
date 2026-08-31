@@ -1,0 +1,40 @@
+min_version = "2024.9.5"
+
+[tools]
+# tensorflow-cpu wheels are only published for Python < 3.13 (see pyproject.toml),
+# so pin 3.12 to keep the ch05-ch07 GPT-2 weight-loading code usable.
+python = "3.12"
+"github:astral-sh/uv" = "latest"
+ruff = "latest"
+
+[env]
+# uv sync installs into .venv; mise activates it for every shell in this repo.
+_.python.venv = { path = ".venv", create = true }
+
+[tasks.submodules]
+description = "Fetch git submodules (reasoning-from-scratch)"
+run = "git submodule update --init --recursive"
+
+[tasks.sync]
+description = "Install all dependencies (main + dev + bonus groups)"
+run = "uv sync --dev --group bonus"
+
+[tasks.setup]
+description = "Full first-time setup: submodules + dependencies"
+depends = ["submodules", "sync"]
+
+[tasks.check]
+description = "Verify the environment has the expected package versions"
+run = "python setup/02_installing-python-libraries/python_environment_check.py"
+
+[tasks.lab]
+description = "Start JupyterLab"
+run = "jupyter lab"
+
+[tasks.test]
+description = "Run the pytest suite"
+run = "pytest {{arg(name='args', var=true, default='')}}"
+
+[tasks.lint]
+description = "Lint with ruff"
+run = "ruff check ."
