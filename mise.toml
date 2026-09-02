@@ -19,6 +19,10 @@ run = "git submodule update --init --recursive"
 description = "Install all dependencies (main + dev + bonus groups)"
 run = "uv sync --dev --group bonus"
 
+[tasks.upgrade]
+description = "Upgrade dependencies to latest matching requirements.txt"
+run = "uv pip install --upgrade -r requirements.txt"
+
 [tasks.setup]
 description = "Full first-time setup: submodules + dependencies"
 depends = ["submodules", "sync"]
